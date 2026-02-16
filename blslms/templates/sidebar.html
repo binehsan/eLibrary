@@ -1,0 +1,6 @@
+{% block sidebar_ext %}
+<a href="{% url 'student_dashboard' %}" style="text-align: center">Dashboard</a>
+<a href="{% url 'profile' user.username %}" style="text-align: center">Profile</a>
+<a href="{% url 'books' %}" style="text-align: center">Catalogue</a>
+<a href="{% url 'student_books' %}" style="text-align: center">My Loans</a>
+{% endblock %}

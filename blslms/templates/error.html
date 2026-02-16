@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <img src="{% static 'unsuccessful.png' %}" alt="Unsuccessful" style="display: block; margin: 0 auto;">
+    <h1 style="font-size: 72px; font-weight: bold;">{{ message }}</h1>
+</div>
+{% endblock %}

@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} - eLibrary{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(to right, #0066cc, #33ccff);
+        font-family: Arial, sans-serif;
+    }
+
+    .book-container {
+        display: flex;
+        gap: 20px;
+        padding-top: 20px;
+    }
+
+    .pdf-viewer {
+        flex: 2;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        height: 600px; 
+    }
+
+    .book-info {
+        flex: 1;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .book-title {
+        font-size: 2rem;
+        color: #0066cc;
+        margin-bottom: 0px;
+    }
+
+    .book-author {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 20px;
+        margin-top: 5px;
+    }
+
+    .stock-info {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 15px; 
+        margin-top: 10px;
+        text-align: center;
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+    }
+
+    .reserve-btn {
+        background-color: #0066cc;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+
+    .review-btn {
+        background-color:rgb(3, 202, 0);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: background 0.3s;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .reserve-btn:hover {
+        background-color: #004d99;
+    }
+
+    .instock {
+        color: green;
+        text-align: center;
+    }
+
+    .notstock {
+        color: red;
+        text-align: center;
+
+    }
+
+    .sidebar {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 15px;
+        width: 250px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 20px;
+        height: auto;
+        text-align: center;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #0066cc;
+        background: #f0f0f0;
+        padding: 10px 15px;
+        border-radius: 5px;
+        display: block;
+        margin-bottom: 10px;
+        transition: background-color 0.2s;
+    }
+
+    .sidebar a:hover {
+        background: #e0e0e0;
+    }
+
+    .rev-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .rev-box {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 15px;
+        text-align: center;
+        width: 80%;
+    }
+    
+    .form-container {
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .form-container button {
+        background-color: #0066cc;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .form-container button:hover {
+        background-color: #004d99;
+    }
+
+    .bookmark-dropdown {
+        margin-top: 20px;
+        text-align: left;
+    }
+
+    .bookmark-toggle-btn {
+        background-color: #0066cc;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s;
+    }
+
+    .bookmark-toggle-btn:hover {
+        background-color: #004d99;
+    }
+
+    .bookmark-list {
+        display: none;
+        margin-top: 10px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .recommended-books {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommended-books h3 {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .recommended-books .book-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommended-books .book-item h4 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .recommended-books .book-item a {
+        background-color: #0066cc;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+
+    .recommended-books .book-item a:hover {
+        background-color: #004d99;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="book-container">
+    <aside class="sidebar">
+        {% include 'sidebar.html' %}
+        {% block sidebar_ext %}{% endblock %}
+
+        {% if book.audio_version %}
+        <div class="audio-container" style="margin-top: 20px;">
+            <h4>Audiobook:</h4>
+            <audio controls style="width: 100%;">
+            <source src="{{ book.audio.url }}" type="audio/mpeg">
+            Your browser does not support the audiobook.
+            </audio>
+        </div>
+        {% endif %}
+        
+        <div class="bookmark-dropdown">
+            <button class="bookmark-toggle-btn" onclick="toggleBookmarks()">Show/Hide Bookmarks</button>
+            <div id="bookmarkList" class="bookmark-list">
+                {% for bookmark in bookmarks %}
+                    <div class="rev-box">
+                        <div style="display: flex; align-items: center;">
+                            <aside style="display: flex; flex-direction: column; align-items: center; margin-right: 20px;">
+                                <p>Page {{ bookmark.page_number }}:</p>
+                            </aside>
+                            <div>
+                                <h4>{{ bookmark.comments }}</h4>
+                                <a href="{% url 'delete_bookmark' bookmark.bookmark_id %}" class="delete-btn" target="_blank" onclick="window.open(this.href, '_blank', 'width=600,height=400'); return false;">Delete Bookmark</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="margin-top: 10px;">You have no bookmarks.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </aside>
+    <div class="pdf-viewer">
+        {% if hasbook %}
+            <iframe src="/static/viewerjs/index.html#{{ ebook.servedpdf.url }}" width="100%" height="100%" style="border: none;"></iframe>
+        {% else %}
+            <iframe src="/static/viewerjs/index.html#{% static 'ebook-not-avail.pdf' %}" width="100%" height="100%" style="border: none;"></iframe>
+        {% endif %}
+    </div>
+
+    <div class="book-info">
+        <h1 class="book-title" style="text-align: center">{{ book.title }}</h1>
+        <h2 class="book-author" style="text-align: center">{{ book.author }}</h2>
+        <h4 style="text-align: center">ISBN: {{ book.isbn }}</h4>
+
+        <div class="stock-info">    
+            {% if book.in_stock %}
+                <h4 class='instock'>Status: In Stock ({{ book.stock_level }} in stock for one-day loan.)</h4>
+                <a href="{% url 'confirm_loan' book.book_id %}" class="reserve-btn">Reserve</a>
+            {% else %}
+                <h4 class='notstock'>Status: Out of Stock Today</h4>
+                <a href="{% url 'confirm_loan' book.book_id %}" class="reserve-btn">Reserve for another period</a>
+            {% endif %}
+        </div>
+
+        <div class="rev-grid">
+            <a href="{% url 'create_bookmark' book.book_id %}" class="review-btn" target="_blank" onclick="window.open(this.href, '_blank', 'width=600,height=400'); return false;">Create Bookmark</a>
+            <a href="{% url 'review' book.book_id %}" class="review-btn">Write Review</a>
+            {% for review in reviews %}
+                <div class="rev-box">
+                    <div style="display: flex; align-items: center;">
+                        <aside style="display: flex; flex-direction: column; align-items: center; margin-right: 20px;">
+                            <a href="{% url 'profile' review.user_id.username %}">
+                                <img src="{% static 'student-icon.png' %}" alt="User image" style="width: 50px; height: 50px;">
+                            </a>
+                            <p>{{ review.user_id }}</p>
+                        </aside>
+                        <div>
+                            <h4>{{ review.comments }}</h4>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No Reviews available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recommended Books Section -->
+<div class="recommended-books">
+    <h3>People who read {{book.title}} also read:</h3>
+    <div class="recommended-books-list">
+        {% for recommended_book in recommended_books %}
+            <div class="book-item">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="{{ recommended_book.cover.url }}" alt="{{ recommended_book.title }} Cover" style="width: 50px; height: 75px; border-radius: 5px;">
+                    <h4>{{ recommended_book.title }}</h4>
+                </div>
+                <a href="{% url 'book' recommended_book.book_id %}">View Details</a>
+            </div>
+        {% empty %}
+            <p>No recommended books available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function toggleBookmarks() {
+        var bookmarkList = document.getElementById("bookmarkList");
+        bookmarkList.style.display = bookmarkList.style.display === "block" ? "none" : "block";
+    }
+</script>
+{% endblock %}
+

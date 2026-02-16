@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* General Styles */
+    body {
+        background: linear-gradient(to right, #0066cc, #33ccff);
+        font-family: Arial, sans-serif;
+    }
+
+    .dashboard-container {
+        display: flex;
+        gap: 20px;
+        padding-top: 20px;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 15px;
+        width: 200px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 20px;
+        height: auto;
+        text-align: center;
+
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #0066cc;
+        background: #f0f0f0;
+        padding: 10px 15px;
+        border-radius: 5px;
+        display: block;
+        margin-bottom: 10px;
+        transition: background-color 0.2s;
+    }
+
+    .sidebar a:hover {
+        background: #e0e0e0;
+    }
+
+    .main-content {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        color: #0066cc;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .recommendations {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .recommendations h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .recommendation-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .recommendation-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        object-fit: cover;
+    }
+
+    .dashboard-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .section-box {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .section-box h3 {
+        color: #0066cc;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+        }
+    }
+
+    .books-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .book-box {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 15px;
+        text-align: center;
+        width: 200px;
+    }
+
+    .cover-image {
+        max-width: 100%;
+        border-radius: 5px;
+        height: auto;
+    }
+
+    .book-title {
+        margin: 4px 0;
+        font-size: 1.0rem;
+        color: #333;
+        
+    }
+
+    .book-author {
+        margin: 10px ;
+        font-size: 0.8rem;
+        color: #666;
+        padding-bottom: 10px;
+    }
+
+    .book-btn {
+        background-color: #0066cc;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+        margin: 10px 0;
+    }
+
+    .book-btn:hover {
+        background-color: #004d99;
+    }
+
+    .alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <aside class="sidebar">
+        {% include 'sidebar.html' %}
+        {% block sidebar_ext %}{% endblock %}
+    </aside>
+
+    <section class="main-content">
+        {% if penalty %}:
+        <div class="alert">
+            <strong>Penalty:</strong> You have a penalty of {{ penaltyamount }} for overdue books.
+            <a href="{% url 'profile' user.username %}">Check Profile</a>
+        </div>
+        {% endif %}
+        <div class="welcome-title">
+            Welcome, {{ user.username }}!
+        </div>
+
+        <div class="recommendations" style="text-align: center">
+            <h3 style="color: blue">Recommended for You</h3>
+            <div class="recommendation-item">
+                <div class="books-grid">
+                    {% for book in books %}
+                    <div class="book-box">
+                        <img src="{{ book.cover.url }}" alt="Cover image of {{ book.title }}" class="cover-image">
+                        <h3 class="book-title">{{ book.title }}</h3>
+                        <h4 class="book-author">{{ book.author }}</h4>
+                        <a href="{% url 'book' book.book_id %}" class="book-btn">View Book</a>
+                    </div>
+                    {% empty %}
+                    <p style='text-align: center;'>No books available.</p>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="dashboard-sections">
+            <div class="section-box">
+                <h3 style="text-align: center;">Loaned Books</h3>
+                <div class="books-grid">
+                    {% for loan in loanedbooks %}
+                    <div class="book-box">
+                        <img src="{{ loan.book_id.cover.url }}" alt="Cover image of {{ book.title }}" class="cover-image">
+                        <h3 class="book-title">{{ loan.book_id.title }}</h3>
+                        <h4 class="book-author">{{ loan.book_id.author }}</h4>
+                        <h4 class="book-author">Loan Status: {{ loan.status }}</h4>
+                        <a href="{% url 'loan' loan.loan_id %}" class="book-btn">View Loan</a>
+                    </div>
+                    {% empty %}
+                    <p>No books available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+    </section>
+</div>
+{% endblock %}
