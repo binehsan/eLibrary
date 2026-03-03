@@ -1,41 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Banned - eLibrary{% endblock %}
+
+{% block title %}500 - Server Error{% endblock %}
 
 {% block content %}
-<div style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    text-align: center;">
-    <div style="
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 90%;">
-        <img src="{% static 'unsuccessful.png' %}" alt="Banned" style="
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;">
-        <h1 style="
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #cc0000;">500 ERROR</h1>
-        <p style="
-            font-size: 1rem;
-            color: #555;
-            margin: 10px 0;">Server Error. BLS Apologises for any inconvenience</p>
-        <a href="{% url 'dashboard' %}" style="
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;">Go to Dashboard</a>
+<div class="error-page">
+    <div class="error-box animate-scale-in">
+        <i class="fas fa-server fa-3x mb-3" style="color: var(--bls-danger);"></i>
+        <h1>500</h1>
+        <p class="text-muted mt-2">Server Error. BLS apologises for any inconvenience.</p>
+        <a href="{% url 'dashboard' %}" class="btn btn-bls mt-3">
+            <i class="fas fa-home me-1"></i>Go to Dashboard
+        </a>
     </div>
 </div>
 {% endblock %}

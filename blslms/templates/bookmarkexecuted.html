@@ -3,81 +3,20 @@
 
 {% block title %}Bookmark Executed - eLibrary{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* Center the main content */
-    .content-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 50px;
-    }
-
-    /* Loan status message styling */
-    .status-message {
-        font-weight: bold;
-        font-size: 24px;
-        color: {% if success %}green{% else %}red{% endif %};
-        text-align: center;
-        
-    }
-
-    /* Reason box styling */
-    .reason-box {
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        width: 60%;
-        text-align: center;
-        font-size: 16px;
-        color: #333;
-    }
-
-    /* Buttons styling */
-    .action-btn {
-        display: inline-block;
-        margin-top: 15px;
-        background-color: #0066cc;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background 0.3s;
-    }
-
-    .action-btn:hover {
-        background-color: #004d99;
-    }
-    .icon {
-        width: 100px;
-        margin-bottom: 10px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="content-container">    
-    <div class="reason-box">
+<div class="error-page">
+    <div class="error-box animate-scale-in">
         {% if success %}
-            <img src="{% static 'successful.png' %}" alt="NotSuccessful" class="icon">
+        <i class="fas fa-check-circle fa-3x mb-3" style="color: var(--bls-success);"></i>
+        <h2 class="fw-bold" style="color: var(--bls-success);">Bookmark Saved!</h2>
         {% else %}
-            <img src="{% static 'unsuccessful.png' %}" alt="NotSuccessful" class="icon">
+        <i class="fas fa-times-circle fa-3x mb-3" style="color: var(--bls-danger);"></i>
+        <h2 class="fw-bold" style="color: var(--bls-danger);">Bookmark Not Posted</h2>
+        <p class="text-muted">{{ reason }}</p>
         {% endif %}
-        <div class="status-message">
-            {% if success %}
-                Bookmark Saved!
-            {% else %}
-                Bookmark Not Posted: {{ reason }}
-            {% endif %}
-        </div>
-            {{ reason }}
-        
-
-        <a href="javascript:window.close();" class="action-btn">Close</a>
+        <a href="javascript:window.close();" class="btn btn-bls mt-3">
+            <i class="fas fa-times me-1"></i>Close
+        </a>
     </div>
-
 </div>
 {% endblock %}

@@ -3,246 +3,62 @@
 
 {% block title %}Books - eLibrary{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* General Styles */
-    body {
-        background: linear-gradient(to right, #0066cc, #33ccff);
-        font-family: Arial, sans-serif;
-    }
-
-    .dashboard-container {
-        display: flex;
-        gap: 20px;
-        padding-top: 20px;
-    }
-
-    .sidebar {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 15px;
-        width: 200px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 20px;
-        height: auto;
-    }
-
-    .sidebar a {
-        text-decoration: none;
-        color: #0066cc;
-        background: #f0f0f0;
-        padding: 10px 15px;
-        border-radius: 5px;
-        display: block;
-        margin-bottom: 10px;
-        transition: background-color 0.2s;
-    }
-
-    .sidebar a:hover {
-        background: #e0e0e0;
-    }
-
-    /* Main Content Styles */
-    .main-content {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .welcome-title {
-        font-size: 2rem;
-        color: #0066cc;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .books-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .book-box {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 10px;
-        padding: 15px;
-        text-align: center;
-        width: 200px;
-    }
-
-    .cover-image {
-        max-width: 100%;
-        border-radius: 5px;
-        height: auto;
-    }
-
-    .book-title {
-        margin: 4px 0;
-        font-size: 1.0rem;
-        color: #333;
-        
-    }
-
-    .book-author {
-        margin: 4px ;
-        font-size: 0.8rem;
-        color: #666;
-        padding-bottom: 10px;
-    }
-
-    .book-btn {
-        background-color: #0066cc;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background 0.3s;
-        margin: 10px 0;
-    }
-
-    .book-btn:hover {
-        background-color: #004d99;
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-container {
-            flex-direction: column;
-        }
-
-        .sidebar {
-            width: 100%;
-        }
-
-        .book-box {
-            width: 90%; /* Adjust width on smaller screens */
-        }
-    }
-
-    .filter-box {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f0f0f0; /* Matches sidebar link background */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
-    }
-
-    .filter-input {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    .filter-btn {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        background-color: #0066cc;
-        color: white;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        
-     }
-
-    .filter-btn:hover {
-        background-color: #004d99;
-    }
-    .sidebar {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 15px;
-        width: 200px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 20px;
-        height: auto;
-    }
-
-    .sidebar a {
-        text-decoration: none;
-        color: #0066cc;
-        background: #f0f0f0;
-        padding: 10px 15px;
-        border-radius: 5px;
-        display: block;
-        margin-bottom: 10px;
-        transition: background-color 0.2s;
-    }
-
-    .sidebar a:hover {
-        background: #e0e0e0;
-    }
-
-    .audio-icon-box {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background:rgb(9, 97, 175); /* Light grey background */
-        border-radius: 15px;
-        padding: 5px 10px;
-        margin-top: 5px;
-        font-size: 1.0rem;
-        color: #333;
-    }
-
-    .audio-icon-box i {
-        margin-right: 5px;
-    }
-
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="dashboard-container">
+<div class="row g-3">
+    <!-- Sidebar -->
+    <div class="col-lg-2 col-md-3">
+        <div class="bls-sidebar animate-slide-left">
+            {% include 'sidebar.html' %}
 
-    <aside class="sidebar">
-        {% include 'sidebar.html' %}
-        {% block sidebar_ext %}{% endblock %}
-        <div class="audio-icon-box" style="margin-top: 10px; font-size: 0.8rem; color: #FFFFFF; text-align: center;">
-            🎧 Audio versions available are marked with this icon.
-        </div>
-        <div class="filter-box">
-            <form method="get" action="{% url 'books' %}">
-                {{ form.as_p }} 
-                <div style="text-align: center"> 
-                    <button type="submit" class="book-btn" center>Apply Filter</button>
-                </div>  
-            </form>
-        </div>
-    </aside>
-
-    
-    <section class="main-content">
-        <div class="welcome-title">
-            Available Books
-        </div>
-
-        <div class="books-grid">
-            {% for book in books %}
-            <div class="book-box">
-                <img src="{{ book.cover.url }}" alt="Cover image of {{ book.title }}" class="cover-image">
-                <h3 class="book-title">{{ book.title }}</h3>
-                <h4 class="book-author">{{ book.author }}</h4>
-                {% if book.audio_version %}
-                <div class="audio-icon-box">
-                    🎧
-                </div>
-                {% endif %}
-                <a href="{% url 'book' book.book_id %}" class="book-btn">View</a>
+            <!-- Audio legend -->
+            <div class="mt-3 p-2 rounded-3 text-center small" style="background: var(--bls-navy); color: #fff;">
+                <i class="fas fa-headphones me-1"></i> Audio versions marked with this icon
             </div>
-            {% empty %}
-            <p>No books available.</p>
-            {% endfor %}
+
+            <!-- Filter -->
+            <div class="mt-3 bls-form">
+                <h6 class="fw-bold text-center mb-2" style="color: var(--bls-navy);">Filter</h6>
+                <form method="get" action="{% url 'books' %}">
+                    {{ form.as_p }}
+                    <div class="text-center mt-2">
+                        <button type="submit" class="btn btn-bls btn-sm w-100">
+                            <i class="fas fa-filter me-1"></i>Apply Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Main -->
+    <div class="col-lg-10 col-md-9">
+        <div class="bls-card-static p-4 animate-fade-up">
+            <h4 class="bls-heading bls-heading-center text-center mb-4">Available Books</h4>
+            <div class="row g-3">
+                {% for book in books %}
+                <div class="col-6 col-sm-4 col-md-3 col-xl-2 animate-fade-up delay-{{ forloop.counter }}">
+                    <div class="card book-card h-100">
+                        <div class="overflow-hidden">
+                            {% if book.cover %}<img src="{{ book.cover.url }}" alt="Cover image of {{ book.title }}" class="card-img-top" data-cover="card" data-fallback="cover-fallback">{% else %}<div class="cover-fallback"><i class="fas fa-book"></i></div>{% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{{ book.title }}</h6>
+                            <p class="card-text mb-1">{{ book.author }}</p>
+                            {% if book.audio_version %}
+                            <span class="badge badge-audio mb-2"><i class="fas fa-headphones me-1"></i>Audio</span>
+                            {% endif %}
+                            <a href="{% url 'book' book.book_id %}" class="btn btn-bls btn-sm mt-auto">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4">
+                    <i class="fas fa-book-open fa-2x text-muted mb-2"></i>
+                    <p class="text-muted">No books available.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

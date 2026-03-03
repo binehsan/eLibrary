@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}Error - eLibrary{% endblock %}
+
 {% block content %}
-<div style="text-align: center; margin-top: 50px;">
-    <img src="{% static 'unsuccessful.png' %}" alt="Unsuccessful" style="display: block; margin: 0 auto;">
-    <h1 style="font-size: 72px; font-weight: bold;">{{ message }}</h1>
+<div class="error-page">
+    <div class="error-box animate-scale-in">
+        <i class="fas fa-exclamation-circle fa-3x mb-3" style="color: var(--bls-danger);"></i>
+        <h1>{{ message }}</h1>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-bls mt-3">
+            <i class="fas fa-home me-1"></i>Go to Dashboard
+        </a>
+    </div>
 </div>
 {% endblock %}

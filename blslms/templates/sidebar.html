@@ -1,6 +1,8 @@
 {% block sidebar_ext %}
-<a href="{% url 'student_dashboard' %}" style="text-align: center">Dashboard</a>
-<a href="{% url 'profile' user.username %}" style="text-align: center">Profile</a>
-<a href="{% url 'books' %}" style="text-align: center">Catalogue</a>
-<a href="{% url 'student_books' %}" style="text-align: center">My Loans</a>
+<nav class="nav flex-column">
+    <a class="nav-link" href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a class="nav-link" href="{% url 'profile' user.username %}"><i class="fas fa-user"></i> Profile</a>
+    <a class="nav-link" href="{% url 'books' %}"><i class="fas fa-book"></i> Catalogue</a>
+    <a class="nav-link" href="{% url 'student_books' %}"><i class="fas fa-bookmark"></i> My Loans</a>
+</nav>
 {% endblock %}

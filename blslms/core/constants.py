@@ -49,7 +49,7 @@ BOOK_CATEGORIES = [
     (39, 'Trusts and Estates Law'),
 ]
 
-POPPLER_PATH = r'C:\Program Files\poppler-24.08.0\Library\bin'
+POPPLER_PATH = None  # poppler is on system PATH on Linux
 
 DAMAGE_OPTIONS = [
     (1, 'Lost'),

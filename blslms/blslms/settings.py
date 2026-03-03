@@ -14,164 +14,123 @@ from pathlib import Path
 import os
 
 
-#jazzmin example cod
+# Jazzmin Admin Theme — BLS Brand
 JAZZMIN_SETTINGS = {
     "logout_redirect_url": "/accounts/login",
     "login_redirect_url": "/accounts/login",
-    # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "BLS eLibrary Admin",
-
-    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "BLS eLibrary",
-
-    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_brand": "BLS eLibrary",
-
-    # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": "\logos\BLS-badge.png",
-
-    # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
-    "login_logo": "\logos\BLS-badge.png",
-
-    # Logo to use for login form in dark themes (defaults to login_logo)
+    "site_logo": "logos/favicon.png",
+    "login_logo": "logos/BLS-badge.png",
     "login_logo_dark": None,
+    "site_logo_classes": "img-circle",
+    "site_icon": "logos/favicon.png",
+    "welcome_sign": "BLS eLibrary Administration",
+    "copyright": "BLS College of Legal Education",
+    "user_avatar": None,
 
-    # CSS classes that are applied to the logo above
-    "site_logo_classes": "img-square",
-
-    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
-    "site_icon": '\logos\favicon.png',
-
-    # Welcome text on the login screen
-    "welcome_sign": "Welcome to BLS eLibrary Admin",
-
-    # Copyright on the footer
-    "copyright": "BLS College of Legal Education - 2025",
-
-
-
-    # Field name on user model that contains avatar ImageField/URLField/Charfield or a callable that receives the user
-    "user_avatar": '\student-icon.png',
-
-    ############
-    # Top Menu #
-    ############
-
-    # Links to put along the top menu
+    # Top Menu
     "topmenu_links": [
-
-        # Url that gets reversed (Permissions can be added)
-        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
-
-        # model admin to link to (Permissions checked against model)
-        {"model": "auth.User"},
-
-        # App with dropdown menu to all its models pages (Permissions checked against models)
-        {"app": "books"},
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Student Site", "url": "/student/dashboard/", "new_window": True},
     ],
 
-    #############
-    # User Menu #
-    #############
-
-    # Additional links to include in the user menu on the top right ("app" url type is not allowed)
+    # User Menu
     "usermenu_links": [
         {"name": "BLS Website", "url": "https://businesslaw.school", "new_window": True},
-        {"model": "auth.user"}
     ],
 
-    #############
-    # Side Menu #
-    #############
-
-    # Whether to display the side menu
+    # Side Menu
     "show_sidebar": True,
-    "user_avatar": None,
-    "show_recent": False,
-
-    # Whether to aut expand the menu
     "navigation_expanded": True,
+    "show_recent_actions": False,
 
-    # Hide these apps when generating side menu e.g (auth)
-    # "hide_apps": ['socialaccount', 'allauth','sites','auth', 'django_celery_beat'],
+    "hide_models": ["core.OnlineBookRead"],
 
-    # Hide these models when generating side menu (e.g auth.user)
-    # "hide_models": ['allauth.socialaccount', 'allauth.account'],
+    "order_with_respect_to": [
+        "core",
+        "core.book",
+        "core.physicalbook",
+        "core.loan",
+        "core.loanissuancenotes",
+        "core.damage",
+        "core.penalty",
+        "core.review",
+        "core.reviewnote",
+        "core.blsuser",
+        "auth",
+    ],
 
-    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": ["auth", "books", "books.author", "books.book"],
-
-    # Custom links to append to app groups, keyed on app name
-    "custom_links": {
-        "books": [{
-            "name": "Make Messages", 
-            "url": "make_messages", 
-            "icon": "fas fa-comments",
-            "permissions": ["books.view_book"]
-        }]
-    },
-
-    # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.13.0,5.12.0,5.11.2,5.11.1,5.10.0,5.9.0,5.8.2,5.8.1,5.7.2,5.7.1,5.7.0,5.6.3,5.5.0,5.4.2
-    # for the full list of 5.13.0 free icon classes
+    # Icons
     "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
+        "auth": "fas fa-shield-alt",
         "auth.Group": "fas fa-users",
+        "core": "fas fa-book-open",
+        "core.blsuser": "fas fa-user-graduate",
+        "core.book": "fas fa-book",
+        "core.physicalbook": "fas fa-swatchbook",
+        "core.loan": "fas fa-handshake",
+        "core.loanissuancenotes": "fas fa-sticky-note",
+        "core.damage": "fas fa-exclamation-triangle",
+        "core.penalty": "fas fa-gavel",
+        "core.review": "fas fa-star",
+        "core.reviewnote": "fas fa-clipboard-check",
+        "django_celery_beat.periodictask": "fas fa-clock",
+        "django_celery_beat.clockedschedule": "fas fa-stopwatch",
+        "django_celery_beat.crontabschedule": "fas fa-calendar-alt",
+        "django_celery_beat.intervalschedule": "fas fa-hourglass-half",
+        "django_celery_beat.solarschedule": "fas fa-sun",
     },
-    # Icons that are used when one is not manually specified
-    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-circle",
 
-    #################
-    # Related Modal #
-    #################
-    # Use modals instead of popups
     "related_modal_active": False,
 
-    #############
-    # UI Tweaks #
-    #############
-    # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": None,
+    # Custom CSS
+    "custom_css": "css/admin-bls.css",
     "custom_js": None,
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
     "use_google_fonts_cdn": True,
-    # Whether to show the UI customizer on the sidebar
-    "show_ui_builder": True,
-    "show_recent": False, 
-    
+    "show_ui_builder": False,
 
-    ###############
-    # Change view #
-    ###############
-    # Render out the change view as a single form, or in tabs, current options are
-    # - single
-    # - horizontal_tabs (default)
-    # - vertical_tabs
-    # - collapsible
-    # - carousel
+    # Change view
     "changeform_format": "horizontal_tabs",
-    # override change forms on a per modeladmin basis
-    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
-    # Add a language dropdown into the admin
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs",
+    },
     "language_chooser": False,
-    "icons": {
-        "core.book": "fa-solid fa-book",
-        "core.damage": "fa-solid fa-circle-exclamation",
-        "core.loanissuancenotes": "fa-solid fa-note-sticky",
-        "core.loan": "fa-solid fa-landmark",
-        "core.penalty": "fa-solid fa-money-bill",
-        "core.physicalbook": "fa-solid fa-book",
-        "core.review": "fa-solid fa-star",
-        "core.user": "fa-solid fa-user",
-        "core.reviewnote": "fa-solid fa-note-sticky",
-        "celery_beat.periodictasks": "fa-solid fa-clock",
-        "celery_beat": "fa-solid fa-clock",
-        
+}
 
-        "auth": "fa-solid fa-users",
-
-
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": True,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
     },
 }
 
@@ -193,12 +152,13 @@ CELERY_TASK_SERIALIZER = 'json'
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_-8tu!h9qa)ab1&h1m(qy^==tn+y96fa(*i=@3bu&6*jem_j2@'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_-8tu!h9qa)ab1&h1m(qy^==tn+y96fa(*i=@3bu&6*jem_j2@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 AUTH_USER_MODEL = 'core.BLSUser'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'elibrary.businesslaw.school').split(',')
+CSRF_TRUSTED_ORIGINS = ['https://elibrary.businesslaw.school']
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # This tells Django to look in the global static folder
 ]
@@ -323,6 +283,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

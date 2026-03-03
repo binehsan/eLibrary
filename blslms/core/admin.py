@@ -30,6 +30,21 @@ class CustomUserAdmin(BaseUserAdmin):
          ),
     )
 
+    def has_module_permission(self, request):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
     def save_model(self, request, obj, form, change):
         allowed_super = True if request.user.is_superuser else False
         if obj.username == 'blssuper':
@@ -219,9 +234,27 @@ class PenaltyAdmin(admin.ModelAdmin):
     actions = ['Mark_Paid']
 
 
+class SuperuserOnlyGroupAdmin(admin.ModelAdmin):
+    """Only superusers can see/manage groups."""
+    def has_module_permission(self, request):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+
 admin.site.register(BLSUser, CustomUserAdmin)
 admin.site.unregister(Group)
-admin.site.register(Group)
+admin.site.register(Group, SuperuserOnlyGroupAdmin)
 admin.site.register(LoanIssuanceNotes, LoanIssuanceNotesAdmin)
 
 admin.site.register(Book, BookAdmin)
@@ -231,6 +264,5 @@ admin.site.register(Review, ReviewAdmin)
 admin.site.register(Penalty, PenaltyAdmin)
 admin.site.register(ReviewNote, ReviewNoteAdmin)
 admin.site.register(PhysicalBook, PhysicalBookAdmin)
-admin.site.register(OnlineBookRead)
 
-# onlinebookread, bookmark
+# OnlineBookRead hidden from admin (still in DB, just not shown)

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0066cc, #33ccff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+        .login-container form div {
+            margin-bottom: 15px;
+            text-align: left;
+            width: 100%;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .login-container input {
+            width: 100%;
+            max-width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 75%;
+            margin-top: 10px;
+        }
+        .login-container button:hover {
+            background: #005bb5;
+        }
+        .error-message {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+            background: #ffebeb;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 5px;
+        }
+        @media (max-width: 500px) {
+            .login-container {
+                width: 95%;
+            }
+            .login-container input {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <img src="{% static 'logos/favicon.png' %}" alt="Logo" class="logo">
+    <h2>Login</h2>
+    
+    {% if form.errors %}
+    <div class="error-message" style="color: red; padding: 10px; border: 1px solid red; background: #ffebeb; border-radius: 5px;">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+        
+        {% for field in form %}
+            {% for error in field.errors %}
+                <p>{{ field.label }}: {{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_username">Username:</label>
+            <input type="text" name="login" id="id_username" required>
+        </div>
+        <div>
+            <label for="id_password">Password:</label>
+            <input type="password" name="password" id="id_password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+</div>
+</body>
+</html>

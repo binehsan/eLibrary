@@ -17,6 +17,7 @@ Including another URLconf
 # In your_app/urls.py
 from django.urls import path, include
 from django.contrib import admin
+from django.views.generic import RedirectView
 from core.views import *
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,6 +26,7 @@ admin.site.site_header = 'BLS eLibrary'
 admin.site.site_title = 'BLS eLibrary'
 admin.site.index_title = 'Dashboard - BLS'
 urlpatterns = [
+    path('', RedirectView.as_view(url='/accounts/login/', permanent=False), name='root'),
     path('admin/', admin.site.urls),
     path('student/books', student_books, name='student_books'),
     path('books', books, name='books'),

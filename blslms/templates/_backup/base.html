@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BLS eLibrary{% endblock %}</title>
+    <style>
+        body {
+            font-family: Exo, sans-serif;
+            background: linear-gradient(to right, #0066cc, #33ccff);
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .navbar h1 {
+            font-size: 1.2rem;
+            color: #0066cc;
+            margin: 0;
+            cursor: pointer;
+        }
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info span {
+            margin-right: 10px;
+            color: #333;
+        }
+        .user-info img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .logout-btn {
+            background:rgb(0, 68, 91);
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        .container {
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .navbar h1 {
+                font-size: 1rem;
+            }
+            .user-info span {
+                display: none; 
+            }
+        }
+
+        {% block extra_css %} {% endblock %}
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <a href="{% url 'student_dashboard' %}">
+                <img src="{% static 'logos/favicon.png' %}" alt="Logo">
+        
+            </a>
+        </div>
+        <div class="user-info">
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' user.username %}">
+                <img src="{% static 'student-icon.png' %}" alt="User Icon">
+            </a>
+            <span style='padding-left: 5px'>{{ user.username }}</span>
+            <a href="{% url 'account_logout' %}" class="logout-btn">Logout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="login-link">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    
+    <main class="container">
+        {% block content %}
+        <!-- Content for individual pages will be injected here -->
+        {% endblock %}
+    </main>
+</body>
+</html>

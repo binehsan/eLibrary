@@ -1,36 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Banned - eLibrary{% endblock %}
 
 {% block content %}
-<div style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    text-align: center;">
-    <div style="
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 90%;">
-        <img src="{% static 'unsuccessful.png' %}" alt="Banned" style="
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;">
-        <h1 style="
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #cc0000;">You Have Been Banned</h1>
-        <p style="
-            font-size: 1rem;
-            color: #555;
-            margin: 10px 0;">Due to repeat sanctions</p>
-        <p style="
-            font-size: 0.875rem;
-            color: #888;">Please speak to the librarian for further assistance.</p>
+<div class="error-page">
+    <div class="error-box animate-scale-in">
+        <i class="fas fa-ban fa-3x mb-3" style="color: var(--bls-danger);"></i>
+        <h1>You Have Been Banned</h1>
+        <p class="text-muted mt-2">Due to repeat sanctions</p>
+        <small class="text-muted">Please speak to the librarian for further assistance.</small>
     </div>
 </div>
 {% endblock %}

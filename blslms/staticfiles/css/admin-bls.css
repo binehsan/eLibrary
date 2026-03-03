@@ -1,0 +1,271 @@
+/* ============================================================
+   BLS eLibrary — Admin Panel Brand Override
+   Matches student-facing design: Navy #1a3a5c
+   ============================================================ */
+
+/* ---------- CSS Variables ---------- */
+:root {
+  --bls-navy:       #1a3a5c;
+  --bls-navy-dark:  #0f2744;
+  --bls-navy-light: #2a5a8c;
+  --bls-accent:     #2980b9;
+  --bls-bg:         #f0f4f8;
+  --bls-success:    #27ae60;
+  --bls-danger:     #e74c3c;
+}
+
+/* ---------- Navbar ---------- */
+.main-header.navbar {
+  background: var(--bls-navy) !important;
+  border-bottom: 3px solid var(--bls-navy-dark) !important;
+  box-shadow: 0 2px 12px rgba(26, 58, 92, .15);
+}
+.main-header .navbar-nav .nav-link,
+.main-header .navbar-brand {
+  color: rgba(255, 255, 255, .9) !important;
+}
+.main-header .navbar-nav .nav-link:hover {
+  color: #fff !important;
+}
+
+/* ---------- Sidebar ---------- */
+.main-sidebar, .main-sidebar::before {
+  background: var(--bls-navy-dark) !important;
+}
+.main-sidebar .brand-link {
+  background: var(--bls-navy) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
+}
+.main-sidebar .brand-link .brand-text {
+  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: -.02em;
+}
+.main-sidebar .nav-sidebar .nav-link {
+  color: rgba(255, 255, 255, .75) !important;
+  border-radius: 8px;
+  margin: 2px 8px;
+  transition: all .25s ease;
+}
+.main-sidebar .nav-sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, .1) !important;
+  color: #fff !important;
+}
+.main-sidebar .nav-sidebar .nav-link.active,
+.main-sidebar .nav-sidebar > .nav-item > .nav-link.active {
+  background: var(--bls-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(41, 128, 185, .3);
+}
+.main-sidebar .nav-sidebar .nav-link p,
+.main-sidebar .nav-sidebar .nav-link i {
+  color: inherit !important;
+}
+.nav-header {
+  color: rgba(255, 255, 255, .45) !important;
+  text-transform: uppercase;
+  font-size: .7rem !important;
+  letter-spacing: .08em;
+  padding: .8rem 1rem .3rem !important;
+}
+
+/* ---------- Body / Content ---------- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  background: var(--bls-bg) !important;
+}
+.content-wrapper {
+  background: var(--bls-bg) !important;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 16px rgba(26, 58, 92, .08) !important;
+  transition: box-shadow .3s ease;
+}
+.card:hover {
+  box-shadow: 0 4px 24px rgba(26, 58, 92, .12) !important;
+}
+.card-header {
+  background: transparent !important;
+  border-bottom: 1px solid #e9ecef !important;
+  font-weight: 700;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary, .btn-info {
+  background: var(--bls-navy) !important;
+  border-color: var(--bls-navy) !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+  transition: all .25s ease;
+}
+.btn-primary:hover, .btn-info:hover {
+  background: var(--bls-navy-light) !important;
+  border-color: var(--bls-navy-light) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 58, 92, .25);
+}
+.btn-success {
+  background: var(--bls-success) !important;
+  border-color: var(--bls-success) !important;
+  border-radius: 8px !important;
+}
+.btn-danger {
+  background: var(--bls-danger) !important;
+  border-color: var(--bls-danger) !important;
+  border-radius: 8px !important;
+}
+.btn-outline-primary {
+  color: var(--bls-navy) !important;
+  border-color: var(--bls-navy) !important;
+  border-radius: 8px !important;
+}
+.btn-outline-primary:hover {
+  background: var(--bls-navy) !important;
+  color: #fff !important;
+}
+
+/* ---------- Tables ---------- */
+.table thead th {
+  background: var(--bls-navy) !important;
+  color: #fff !important;
+  border: none !important;
+  font-weight: 600;
+  font-size: .85rem;
+  letter-spacing: .02em;
+}
+.table thead th a,
+.table thead th a:hover {
+  color: #fff !important;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+  background: rgba(26, 58, 92, .03);
+}
+.table-hover tbody tr:hover {
+  background: rgba(41, 128, 185, .08) !important;
+}
+
+/* ---------- Links & Breadcrumbs ---------- */
+a {
+  color: var(--bls-accent);
+  transition: color .2s ease;
+}
+a:hover {
+  color: var(--bls-navy);
+}
+.breadcrumb-item a {
+  color: var(--bls-navy) !important;
+}
+.breadcrumb-item.active {
+  color: var(--bls-accent) !important;
+}
+
+/* ---------- Content Header ---------- */
+.content-header h1 {
+  font-weight: 800 !important;
+  color: var(--bls-navy);
+  letter-spacing: -.02em;
+}
+
+/* ---------- Login Page ---------- */
+.login-page, .register-page {
+  background: linear-gradient(135deg, var(--bls-navy) 0%, var(--bls-navy-light) 50%, var(--bls-accent) 100%) !important;
+}
+.login-box .card,
+.register-box .card {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(26, 58, 92, .2) !important;
+}
+.login-box .card-header,
+.register-box .card-header {
+  background: transparent !important;
+}
+.login-logo a, .register-logo a {
+  color: #fff !important;
+  font-weight: 800;
+}
+
+/* ---------- Form Controls ---------- */
+.form-control, select.form-control {
+  border-radius: 8px !important;
+  border: 1.5px solid #d1d9e0 !important;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+.form-control:focus {
+  border-color: var(--bls-navy) !important;
+  box-shadow: 0 0 0 3px rgba(26, 58, 92, .12) !important;
+}
+
+/* ---------- Badges ---------- */
+.badge-primary, .bg-primary {
+  background: var(--bls-navy) !important;
+}
+.badge-info, .bg-info {
+  background: var(--bls-accent) !important;
+}
+
+/* ---------- Pagination ---------- */
+.page-item.active .page-link {
+  background: var(--bls-navy) !important;
+  border-color: var(--bls-navy) !important;
+}
+.page-link {
+  color: var(--bls-navy);
+  border-radius: 6px !important;
+  margin: 0 2px;
+}
+
+/* ---------- Alert overrides ---------- */
+.alert-info {
+  background: rgba(41, 128, 185, .1) !important;
+  border-color: var(--bls-accent) !important;
+  color: var(--bls-navy) !important;
+}
+
+/* ---------- Hide Recent Actions ---------- */
+#recent-actions-module,
+.col-sm-3.col-12:has(#recent-actions-module),
+div[id="recent-actions-module"] {
+  display: none !important;
+}
+
+/* ---------- Footer ---------- */
+.main-footer {
+  background: #fff !important;
+  border-top: 2px solid var(--bls-navy) !important;
+  font-size: .8rem;
+}
+
+/* ---------- Small UI polish ---------- */
+.select2-container--default .select2-selection--single {
+  border-radius: 8px !important;
+  border: 1.5px solid #d1d9e0 !important;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+  background: var(--bls-navy) !important;
+  border-color: var(--bls-navy) !important;
+}
+.progress-bar {
+  background: var(--bls-accent) !important;
+}
+
+/* ---------- Dashboard info boxes ---------- */
+.info-box .info-box-icon {
+  border-radius: 12px !important;
+}
+.small-box {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+.small-box > .inner h3 {
+  font-weight: 800;
+}
+.small-box .icon {
+  color: rgba(255, 255, 255, .2);
+}
+.bg-primary, .small-box.bg-primary {
+  background: var(--bls-navy) !important;
+}

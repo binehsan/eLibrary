@@ -3,86 +3,23 @@
 
 {% block title %}Review Executed - eLibrary{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* Center the main content */
-    .content-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 50px;
-    }
-
-    /* Loan status message styling */
-    .status-message {
-        font-weight: bold;
-        font-size: 24px;
-        color: {% if success %}green{% else %}red{% endif %};
-        text-align: center;
-        
-    }
-
-    /* Reason box styling */
-    .reason-box {
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        width: 60%;
-        text-align: center;
-        font-size: 16px;
-        color: #333;
-    }
-
-    /* Buttons styling */
-    .action-btn {
-        display: inline-block;
-        margin-top: 15px;
-        background-color: #0066cc;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background 0.3s;
-    }
-
-    .action-btn:hover {
-        background-color: #004d99;
-    }
-    .icon {
-        width: 100px;
-        margin-bottom: 10px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="content-container">
-    <!-- Loan status and reason display -->
-    
-    
-    <div class="reason-box">
+<div class="error-page">
+    <div class="error-box animate-scale-in">
         {% if success %}
-            <img src="{% static 'successful.png' %}" alt="NotSuccessful" class="icon">
+        <i class="fas fa-check-circle fa-3x mb-3" style="color: var(--bls-success);"></i>
+        <h2 class="fw-bold" style="color: var(--bls-success);">Review Posted!</h2>
+        <a href="{% url 'book' book.book_id %}" class="btn btn-bls mt-3">
+            <i class="fas fa-book me-1"></i>Back to Book
+        </a>
         {% else %}
-            <img src="{% static 'unsuccessful.png' %}" alt="NotSuccessful" class="icon">
-        {% endif %}
-        <div class="status-message">
-            {% if success %}
-                Review Posted!
-            {% else %}
-                Review Not Posted.
-                <br><i>Reason: {{ reason }}</i>
-            {% endif %}
-        </div>
-        {% if success %}
-        <a href="{% url 'book' book.book_id %}" class="action-btn">Back to Book</a>
-        {% else %}
-        <a href="{% url 'review' book.book_id %}" class="action-btn">Try Again</a>
+        <i class="fas fa-times-circle fa-3x mb-3" style="color: var(--bls-danger);"></i>
+        <h2 class="fw-bold" style="color: var(--bls-danger);">Review Not Posted</h2>
+        <p class="text-muted"><em>Reason: {{ reason }}</em></p>
+        <a href="{% url 'review' book.book_id %}" class="btn btn-bls mt-3">
+            <i class="fas fa-redo me-1"></i>Try Again
+        </a>
         {% endif %}
     </div>
-
 </div>
 {% endblock %}

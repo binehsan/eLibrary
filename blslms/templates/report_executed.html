@@ -1,76 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Damage Execution - eLibrary{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* Center the main content */
-    .content-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 50px;
-    }
-
-    /* Loan status message styling */
-    .status-message {
-        font-weight: bold;
-        font-size: 24px;
-        color: {% if success %}green{% else %}red{% endif %};
-        text-align: center;
-        
-    }
-
-    /* Reason box styling */
-    .reason-box {
-        background-color: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        width: 60%;
-        text-align: center;
-        font-size: 16px;
-        color: #333;
-    }
-
-    /* Buttons styling */
-    .action-btn {
-        display: inline-block;
-        margin-top: 15px;
-        background-color: #0066cc;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background 0.3s;
-    }
-
-    .action-btn:hover {
-        background-color: #004d99;
-    }
-    .icon {
-        width: 100px;
-        margin-bottom: 10px;
-    }
-</style>
-{% endblock %}
+{% block title %}Damage Reported - eLibrary{% endblock %}
 
 {% block content %}
-<div class="content-container">    
-    <div class="reason-box">
-        <img src="{% static 'successful.png' %}" alt="NotSuccessful" class="icon">
-        
-        <div class="status-message">
-            Thank You. Your report has been logged.
-        </div>
-            
-      
-        <a href="{% url 'student_dashboard' %}" class="action-btn">Go to Dashboard</a>
-        
+<div class="error-page">
+    <div class="error-box animate-scale-in">
+        <i class="fas fa-check-circle fa-3x mb-3" style="color: var(--bls-success);"></i>
+        <h2 class="fw-bold" style="color: var(--bls-success);">Report Logged</h2>
+        <p class="text-muted mt-2">Thank you. Your damage report has been logged.</p>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-bls mt-3">
+            <i class="fas fa-home me-1"></i>Go to Dashboard
+        </a>
     </div>
-
 </div>
 {% endblock %}

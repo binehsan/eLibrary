@@ -1,0 +1,15 @@
+[Unit]
+Description=BLS eLibrary Celery Beat Scheduler
+After=network.target
+
+[Service]
+User=django
+Group=django
+WorkingDirectory=/home/django/NEA_2024_Official-main/blslms
+EnvironmentFile=/home/django/NEA_2024_Official-main/deploy/.env
+ExecStart=/home/django/NEA_2024_Official-main/venv/bin/celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

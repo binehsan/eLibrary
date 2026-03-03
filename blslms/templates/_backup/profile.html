@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile - BLS eLibrary{% endblock %}
+
+{% block content %}
+
+<div class="profile-page" style="max-width: 600px; margin: auto; text-align: center; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+    <!-- Profile Picture -->
+    <div class="profile-picture" style="margin-bottom: 20px;">
+        <img src="{% static 'student-icon.png' %}" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #0066cc;">
+    </div>
+
+    <!-- Username -->
+    <h2 style="color: #333; font-size: 1.8rem; margin-bottom: 10px;">{{ user.username }}</h2>
+
+    <div class="books" style="margin-top: 30px;">
+        
+        <h3 style="color: #0066cc; margin-bottom: 15px;">Most Read Books</h3>
+
+        {% if hasbooks %}
+            <ul style="list-style: none; padding: 0;">
+                {% for thisbook in books %}
+                    <li style="margin-bottom: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div style="display: flex; align-items: center;">
+                            <a href="{% url 'book' thisbook.book_id %}" style="margin-right: 15px;">
+                                <img src="{{ thisbook.cover.url }}" alt="Book Cover" style="width: 50px; height: 75px; margin-right: 15px; border-radius: 5px;">
+                            </a>
+                            
+                            <div style="flex-grow: 1;">
+                                <p style="margin: 0; font-size: 1rem; color: #333;">{{ thisbook.title }}</p>
+                                <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">Author: {{ thisbook.author }}</p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: #666;">No books read yet.</p>
+        {% endif %}
+
+    </div>
+
+    <!-- Penalties Section -->
+     {% if isuser %}
+    <div class="penalties" style="margin-top: 30px;">
+        
+        <h3 style="color: #0066cc; margin-bottom: 15px;">Penalties</h3>
+
+        {% if haspenalties %}
+            <ul style="list-style: none; padding: 0;">
+                {% for penalty in penalties %}
+                    <li style="margin-bottom: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <p style="margin: 0; font-size: 1rem; color: #333;">Related Book: {{ penalty.physicalbook.book_id.title }}</p>
+                        <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">Amount: {{ penalty.amount }} PKR </p>
+                        <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">Issued on: {{ penalty.issuance_date }}</p>
+                        <a href="{% url 'penalty' penalty.penalty_id %}" class="penalty-btn" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px; font-size: 1rem;">View Details</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: #666;">No penalties due.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Reviews Section -->
+    <div class="reviews" style="margin-top: 30px;">
+        <h3 style="color: #0066cc; margin-bottom: 15px;">Reviews</h3>
+
+        {% if reviews.exists %}
+            <ul style="list-style: none; padding: 0;">
+                {% for review in reviews %}
+                    <li style="margin-bottom: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div style="display: flex; align-items: center;">
+                            <a href="{% url 'book' review.book_id %}" style="margin-right: 15px;">
+                                <img src="{{ review.book.cover.url }}" alt="Book Cover" style="width: 50px; height: 75px; border-radius: 5px;">
+                            </a>
+                            <div style="flex-grow: 1;">
+                                <p style="margin: 0; font-size: 1rem; color: #333;">{{ review.book.title }}</p>
+                                <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">{{ review.comments }}</p>
+                                {% if isuser %}
+                                <a href="{% url 'delete_review' review.review_id %}" class="delete-btn" target="_blank" onclick="window.open(this.href, '_blank', 'width=600,height=400'); return false;">Delete Review</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: #666;">No reviews available.</p>
+        {% endif %}
+    </div>
+    {% if isuser %}
+    <div class="reviews" style="margin-top: 30px;">
+        <h3 style="color: #0066cc; margin-bottom: 15px;">Bookmarks</h3>
+        
+        {% if hasbookmarks %}
+        <ul style="list-style: none; padding: 0;">
+            {% for bookmark in bookmarks %}
+            <li style="margin-bottom: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; align-items: center;">
+                    <a href="{% url 'book' bookmark.book.book_id %}" style="margin-right: 15px;">
+                        <img src="{{ bookmark.book.cover.url }}" alt="Book Cover" style="width: 50px; height: 75px; border-radius: 5px;">
+                    </a>
+                    <div style="flex-grow: 1;">
+                        <p style="margin: 0; font-size: 1rem; color: #333;">{{ bookmark.book.title }}</p>
+                        <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">{{ bookmark.comments }}</p>
+                        {% if isuser %}
+                        <a href="{% url 'delete_bookmark' bookmark.bookmark_id %}" class="delete-btn" target="_blank" onclick="window.open(this.href, '_blank', 'width=600,height=400'); return false;">Delete Bookmark</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: #666;">No bookmarks available.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="display: inline-block; margin-top: 20px; padding: 8px 15px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px; font-size: 1rem;">Back to Dashboard</a>
+
+
+
+
+</div>
+
+
+
+
+{% endblock %}

@@ -232,12 +232,15 @@ class Book(AbstractModel):
 
 
     def watermark(self):
+        watermark_path = os.path.join(settings.BASE_DIR, 'static', 'watermark.png')
+        if not os.path.exists(watermark_path):
+            return  # skip watermarking if image not found
         original = pymupdf.open(self.file.path)
         for index in range(len(original)):
             page = original[index]
             rect = page.rect
             page.insert_image(
-                rect, filename=r'C:\Users\amen\Documents\NEA-BLS\blslms\static\watermark.png', overlay=True)
+                rect, filename=watermark_path, overlay=True)
 
         original.save(self.file.path, incremental=True, encryption=0)
 
@@ -284,24 +287,33 @@ class Book(AbstractModel):
 
     def delete(self, *args, **kwargs):
         try:
-            os.remove(self.file.path)
-            os.remove(self.cover.path)
+            if self.file:
+                os.remove(self.file.path)
+            if self.cover:
+                os.remove(self.cover.path)
         except Exception as error:
-            print('ERROR')
-            admin_alert('Book Deletion Error',
-                        f'{error} occured while deleting {self.title} through self.delete')
+            print(f'Book file deletion error: {error}')
+            try:
+                admin_alert('Book Deletion Error',
+                            f'{error} occured while deleting {self.title} through self.delete')
+            except Exception:
+                pass  # Don't let email failure block deletion
 
         super(Book, self).delete(*args, **kwargs)
 
     def remove(self, *args, **kwargs):
         try:
-            if self.file == True:
+            if self.file:
                 os.remove(self.file.path)
+            if self.cover:
                 os.remove(self.cover.path)
         except Exception as error:
-            print('ERROR')
-            admin_alert('Book Deletion Error',
-                        f'{error} occured while deleting {self.title} through self.remove')
+            print(f'Book file removal error: {error}')
+            try:
+                admin_alert('Book Deletion Error',
+                            f'{error} occured while deleting {self.title} through self.remove')
+            except Exception:
+                pass  # Don't let email failure block deletion
         super(Book, self).delete(*args, **kwargs)
 
 

@@ -3,139 +3,56 @@
 
 {% block title %}Loan Details - eLibrary{% endblock %}
 
-{% block extra_css %}
-<style>
-    body {
-        background: linear-gradient(to right, #0066cc, #33ccff);
-        font-family: Arial, sans-serif;
-    }
-
-    /* Loan Container */
-    .loan-container {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 40px 20px;
-    }
-
-    /* Book Cover Styling */
-    .book-cover {
-        flex: 1;
-        background-color: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        text-align: center;
-    }
-
-    .book-cover img {
-        max-width: 100%;
-        border-radius: 15px;
-    }
-
-    /* Loan Details Styling */
-    .loan-details {
-        flex: 2;
-        background-color: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        text-align: center;
-        width: 100%;
-    }
-
-    .loan-details h2 {
-        color: #0066cc;
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .loan-details p {
-        margin: 12px 0;
-        font-size: 1rem;
-        color: #333;
-        line-height: 1.6;
-    }
-
-    .loan-details p strong {
-        color: #0066cc;
-    }
-
-    /* Button for Reporting Damage */
-    .report-damage-btn {
-        display: inline-block;
-        margin: 20px auto 0;
-        background-color: #ff4d4d;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    .report-damage-btn:hover {
-        background-color: #cc0000;
-    }
-
-    .sidebar {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 15px;
-        width: 200px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 20px;
-        height: auto;
-    }
-
-    .sidebar a {
-        text-decoration: none;
-        color: #0066cc;
-        background: #f0f0f0;
-        padding: 10px 15px;
-        border-radius: 5px;
-        display: block;
-        margin-bottom: 10px;
-        transition: background-color 0.2s;
-    }
-
-    .sidebar a:hover {
-        background: #e0e0e0;
-    }
-
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="loan-container">
-    <aside class="sidebar">
-        {% include 'sidebar.html' %}
-        {% block sidebar_ext %}{% endblock %}
-    </aside>
-
-    <!-- Book Cover Section -->
-    <div class="book-cover">
-        <img src="{{ loan.book_id.cover.url }}" alt="{{ loan.book_id.title }} Cover">
+<div class="row g-3 justify-content-center">
+    <!-- Sidebar -->
+    <div class="col-lg-2 col-md-3">
+        <div class="bls-sidebar animate-slide-left">
+            {% include 'sidebar.html' %}
+        </div>
     </div>
 
-    <!-- Loan Details Section -->
-    <div class="loan-details">
-        <h2>Loan Details</h2>
-        <p><strong>Book Title:</strong> {{ loan.book_id.title }}</p>
-        <p><strong>Issuance Date:</strong> {{ loan.creation_date }}</p>
-        <p><strong>Collection Date:</strong> {{ loan.start_date }}</p>
-        <p><strong>Return Date:</strong> {{ loan.end_date }}</p>
-        <p><strong>Status:</strong> {{ loan.status }}</p>
+    <!-- Book Cover -->
+    <div class="col-lg-3 col-md-4 animate-fade-up">
+        <div class="bls-card-static p-3 text-center">
+            {% if loan.book_id.cover %}<img src="{{ loan.book_id.cover.url }}" alt="{{ loan.book_id.title }} Cover" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;" data-cover="md" data-fallback="cover-fallback-md">{% else %}<div class="cover-fallback-md"><i class="fas fa-book"></i></div>{% endif %}
+        </div>
+    </div>
 
-        {% if loan.custody %}
-        <a href="{% url 'extend' loan.loan_id %}" class="report-damage-btn">Extend</a>        
-        <a href="{% url 'report_damage' loan.loan_id %}" class="report-damage-btn">Report Damage</a>
-        {% endif %}
+    <!-- Loan Details -->
+    <div class="col-lg-5 col-md-5 animate-fade-up delay-1">
+        <div class="bls-card-static p-4 text-center">
+            <h4 class="bls-heading bls-heading-center mb-4">Loan Details</h4>
+
+            <div class="text-start mt-4">
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Book Title:</strong> {{ loan.book_id.title }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Issuance Date:</strong> {{ loan.creation_date }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Collection Date:</strong> {{ loan.start_date }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Return Date:</strong> {{ loan.end_date }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Status:</strong> {{ loan.status }}</p>
+                </div>
+            </div>
+
+            {% if loan.custody %}
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{% url 'extend' loan.loan_id %}" class="btn btn-bls">
+                    <i class="fas fa-clock me-1"></i>Extend
+                </a>
+                <a href="{% url 'report_damage' loan.loan_id %}" class="btn btn-bls-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>Report Damage
+                </a>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

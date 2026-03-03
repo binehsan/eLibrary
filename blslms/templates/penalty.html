@@ -1,25 +1,44 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Penalty Details - eLibrary{% endblock %}
 
 {% block content %}
-<div class="profile-page" style="max-width: 600px; margin: auto; text-align: center; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-    <h1 style="color: #0066cc; margin-bottom: 20px;">Penalty Details</h1>
-    <aside>
-        <img src="{{ penalty.physicalbook.book_id.cover.url }}"  style="width: 300px; height: auto; border-radius: 5px; object-fit: cover;">
-    </aside>
+<div class="row justify-content-center animate-fade-up">
+    <div class="col-md-6 col-lg-5">
+        <div class="bls-card-static p-4 text-center">
+            <h4 class="bls-heading bls-heading-center mb-4">Penalty Details</h4>
 
-    <div class="penalty-details" style="margin-top: 30px; text-align: center;">
-        <h3 style="color: #333; margin-bottom: 15px;">Penalty ID: {{ penalty.penalty_id }}</h3>
+            {% if penalty.physicalbook.book_id.cover %}<img src="{{ penalty.physicalbook.book_id.cover.url }}" alt="Book Cover" class="img-fluid rounded my-3" style="max-width: 200px; object-fit: cover;" data-cover="md" data-fallback="cover-fallback-md">{% else %}<div class="cover-fallback-md my-3"><i class="fas fa-book"></i></div>{% endif %}
 
-        <p style="font-size: 1rem; color: #333;"><strong>User:</strong> {{ penalty.user_id.username }}</p>
-        <p style="font-size: 1rem; color: #333;"><strong>Book:</strong> {{ penalty.physicalbook.book_id.title }}</p>
-        <p style="font-size: 1rem; color: #333;"><strong>Damage Reported:</strong> {{ penalty.damage_id.damage_description }}</p>
-        <p style="font-size: 1rem; color: #333;"><strong>Issuance Date:</strong> {{ penalty.issuance_date }}</p>
+            <div class="text-start mt-3">
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Penalty ID:</strong> {{ penalty.penalty_id }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">User:</strong> {{ penalty.user_id.username }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Book:</strong> {{ penalty.physicalbook.book_id.title }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Damage Reported:</strong> {{ penalty.damage_id.damage_description }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Issuance Date:</strong> {{ penalty.issuance_date }}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Paid:</strong> {% if penalty.paid %}Yes{% else %}No{% endif %}</p>
+                </div>
+                <div class="review-item mb-2">
+                    <p class="mb-1"><strong style="color: var(--bls-navy);">Amount:</strong> Rs. {{ penalty.amount }}</p>
+                </div>
+            </div>
 
-        <p style="font-size: 1rem; color: #333;"><strong>Paid:</strong> {% if penalty.paid %} Yes {% else %} No {% endif %}</p>
-        <p style="font-size: 1rem; color: #333;"><strong>Amount:</strong> Rs. {{ penalty.amount }}</p>
-
-        
-        <a href="{% url 'profile' user.username %}" class="btn btn-secondary" style="display: inline-block; margin-top: 20px; padding: 8px 15px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px; font-size: 1rem;">Back to Profile</a>
+            <a href="{% url 'profile' user.username %}" class="btn btn-bls mt-4">
+                <i class="fas fa-arrow-left me-1"></i>Back to Profile
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
