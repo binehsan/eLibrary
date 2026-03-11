@@ -99,7 +99,7 @@ class BookAdmin(admin.ModelAdmin):
     # )
 
     fieldsets = (
-        ('Book Data', {'fields': ('title', 'author', 'isbn', 'category',
+        ('Book Data', {'fields': ('title', 'author', 'category',
          'file', 'description', 'audio_version', 'audio', 'text', 'ebook')}),
     )
 

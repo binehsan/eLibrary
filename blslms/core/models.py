@@ -108,8 +108,7 @@ class Book(AbstractModel):
     book_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100, validators=[check_book_text])  
     author = models.CharField(max_length=100, validators=[check_book_text])
-    isbn = models.CharField(max_length=100, validators=[
-                            check_isbn])
+    
     category = models.IntegerField(choices=BOOK_CATEGORIES)
     physical = models.BooleanField(default=True)
     ebook = models.BooleanField(default=True)

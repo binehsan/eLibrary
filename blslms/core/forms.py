@@ -13,7 +13,6 @@ class BookFilter(forms.Form):
     author = forms.ChoiceField(choices=[], required=False)
     ebook = forms.BooleanField(required=False, label='Avaliable as eBook')
     instock = forms.BooleanField(required=False, label='Only books inStock')
-    ISBN = forms.CharField(max_length=13, required=False, label='ISBN:', validators=[check_isbn])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

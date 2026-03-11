@@ -116,8 +116,7 @@ def student_dashboard(request):
 
 @login_required
 def books(request):
-    isbn_map = {book.isbn: book for book in Book.objects.all()}
-    print(isbn_map)
+
 
     books = Book.objects.all()
     filterform = BookFilter(request.GET or None)
@@ -131,12 +130,7 @@ def books(request):
             books = books.filter(ebook=True)
         if filterform.cleaned_data['instock']:
             books = books.filter(in_stock=True)
-        if filterform.cleaned_data['ISBN']:
-            isbn = filterform.cleaned_data['ISBN']
-            if isbn in isbn_map:
-                books = [isbn_map[isbn]]
-            else:
-                books = []
+        
     print(books)
     context = {'books': books, 'form': filterform}
     return render(request, 'books.html', context)
