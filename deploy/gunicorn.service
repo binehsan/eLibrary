@@ -8,7 +8,7 @@ User=django
 Group=django
 WorkingDirectory=/home/django/NEA_2024_Official-main/blslms
 EnvironmentFile=/home/django/NEA_2024_Official-main/deploy/.env
-ExecStart=/home/django/NEA_2024_Official-main/venv/bin/gunicorn \
+ExecStart=/home/django/NEA_2024_Official-main/env/bin/gunicorn \
     --access-logfile - \
     --workers 3 \
     --bind unix:/run/gunicorn.sock \

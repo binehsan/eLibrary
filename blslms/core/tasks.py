@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.core.files import File
 import sys, pymupdf, pyttsx3
 import shutil
-from core.validators import check_isbn
+from core.validators import check_isbn, check_isbn_task
 from core.utils import *
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -107,6 +107,7 @@ def autobook():
     AUTOBOOK_PICKUP_PATH = os.path.join(settings.MEDIA_ROOT, 'autobook')
     print(AUTOBOOK_PICKUP_PATH)
     books_uploaded = []
+    notdoable = []
     try:
         error = False
         logger = logging.getLogger('celery')
@@ -114,41 +115,34 @@ def autobook():
         files = os.listdir(AUTOBOOK_PICKUP_PATH)
         print(files)
         if len(files)>0:
-            notdoable = []
             print(f'Files found: {len(files)}')
             for file in files:
                 originalname = str(file)
                 print(f'Processing file: {file}')
-                metadata = []
-                # BOOKTITLE,AUTHORNAME,ISBN,CATEGORYNUMBER,PHYSICALTF end with _
-                undscore = file.find('_')
-                while undscore != -1:
-                    print('entered loop')
-                    metadata.append(file[:undscore].replace('-', ' '))
-                    file = file[undscore+1:]
-                    undscore = file.find('_')
-
-                print(f'File metadata: {metadata}')
-                if not check_isbn_task(metadata[2]):
-                    notdoable.append(metadata[0])
+                metadata = originalname.split('_')
+                if len(metadata) < 5:
+                    notdoable.append(originalname)
                     continue
 
-                if len(metadata) != 5:
-                    notdoable.append(metadata[0])
-                    continue
-#
-                with open(f'{AUTOBOOK_PICKUP_PATH}\{originalname}', 'rb') as file:
-                    djangofile = File(file)
-                    physical = True if metadata[4] == 'T' else False
+                title, author, isbn = metadata[0].replace('-', ' '), metadata[1].replace('-', ' '), metadata[2]
+                category = metadata[3]
+                physical_flag = metadata[4]
 
-                    
-                    tempbook = Book(title=metadata[0], author=metadata[1], isbn=metadata[2], category=metadata[3], physical=physical, file=djangofile)
+                if not check_isbn_task(isbn):
+                    notdoable.append(title)
+                    continue
+
+                physical = True if physical_flag.upper() == 'T' else False
+
+                file_path = os.path.join(AUTOBOOK_PICKUP_PATH, originalname)
+                with open(file_path, 'rb') as upload_file:
+                    djangofile = File(upload_file)
+                    tempbook = Book(title=title, author=author, isbn=isbn, category=category, physical=physical, file=djangofile)
                     tempbook.save()
                     print(f'Book created {metadata}')
 
-                    print(f'File {originalname} removed.')
-
-                os.remove(f'{AUTOBOOK_PICKUP_PATH}\{originalname}')
+                print(f'File {originalname} removed.')
+                os.remove(file_path)
                 books_uploaded.append(originalname)
                 
     except Exception as exception:

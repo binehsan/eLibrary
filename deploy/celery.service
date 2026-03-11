@@ -7,7 +7,7 @@ User=django
 Group=django
 WorkingDirectory=/home/django/NEA_2024_Official-main/blslms
 EnvironmentFile=/home/django/NEA_2024_Official-main/deploy/.env
-ExecStart=/home/django/NEA_2024_Official-main/venv/bin/celery -A core worker -l info
+ExecStart=/home/django/NEA_2024_Official-main/env/bin/celery -A core worker -l info
 Restart=on-failure
 RestartSec=5
 

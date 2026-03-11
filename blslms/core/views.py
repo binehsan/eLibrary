@@ -2,6 +2,7 @@ from django.shortcuts import render
 from pathlib import Path
 import os
 import datetime
+import logging
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -14,6 +15,28 @@ import random
 from django.contrib.auth import logout
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+logger = logging.getLogger('blslms')
+
+
+# ── Error codes reference ──────────────────────────────────
+# BLS-E001  Book not found
+# BLS-E002  Loan not found
+# BLS-E003  Penalty not found
+# BLS-E004  Review not found
+# BLS-E005  Bookmark not found
+# BLS-E006  User not found
+# BLS-E007  Unauthorised access
+# BLS-E008  Invalid form submission
+# BLS-E009  Out-of-range page number (bookmark)
+# BLS-E010  No physical copies available (collect)
+# BLS-E011  Internal / unexpected error
+# ────────────────────────────────────────────────────────────
+
+def _error(request, code, message, status=400):
+    """Render the error template with a code and message, and log it."""
+    logger.warning('ERROR_PAGE | code=%s | user=%s | path=%s | msg=%s',
+                   code, getattr(request, 'user', '?'), request.path, message)
+    return render(request, 'error.html', {'code': code, 'message': message}, status=status)
 
 
 class CustomLoginView(LoginView):
@@ -122,7 +145,7 @@ def books(request):
 @login_required
 def book(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, 'banned.html')
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
     user = request.user
     previousreads = OnlineBookRead.objects.filter(
         user_id=user).order_by('-creation_date')
@@ -190,7 +213,7 @@ def confirm_loan(request, book_id, **kwargs):
 def loan(request, loan_id):
     loan = Loan.objects.filter(loan_id=loan_id)
     if not loan.exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E002', 'Loan not found.', status=404)
     else:
         loan = loan[0]
     if request.user == loan.user_id:
@@ -204,7 +227,7 @@ def loan(request, loan_id):
 
         return render(request, 'loan.html', {'loan': loan})
     else:
-        return render(request, 'error.html', {'message': 'You are not authorized to view this page.'})
+        return _error(request, 'BLS-E007', 'You are not authorised to view this loan.', status=403)
 
 
 @login_required
@@ -218,7 +241,7 @@ def report_damage(request, loan_id):
 def profile(request, username):
     user = BLSUser.objects.filter(username=username)
     if not user.exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E006', 'User not found.', status=404)
     user = user[0]
     read_books = OnlineBookRead.objects.filter(user_id=user)
     title_frequency = {}
@@ -259,7 +282,7 @@ def profile(request, username):
 def penalty(request, penalty_id):
     penalty = Penalty.objects.filter(penalty_id=penalty_id)
     if not penalty.exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E003', 'Penalty not found.', status=404)
     else:
         penalty = penalty[0]
     return render(request, 'penalty.html', {'penalty': penalty})
@@ -269,19 +292,22 @@ def penalty(request, penalty_id):
 def delete_review(request, review_id):
     review = Review.objects.filter(review_id=review_id)
     if not review.exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E004', 'Review not found.', status=404)
     else:
         review = review[0]
     review.delete()
     return render(request, 'delete_review.html')
 
 
+@login_required
 def delete_bookmark(request, bookmark_id):
     bookmark = Bookmark.objects.filter(bookmark_id=bookmark_id)
     if not bookmark.exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E005', 'Bookmark not found.', status=404)
     else:
         bookmark = bookmark[0]
+    if bookmark.user_id != request.user:
+        return _error(request, 'BLS-E007', 'You are not authorised to delete this bookmark.', status=403)
     bookmark.delete()
     return render(request, 'delete_bookmark.html')
 
@@ -289,7 +315,7 @@ def delete_bookmark(request, bookmark_id):
 @login_required
 def review(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, 'banned.html')
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
     
     user = request.user
     book = Book.objects.get(book_id=book_id)
@@ -299,7 +325,7 @@ def review(request, book_id):
 @login_required
 def review_executed(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
     if request.method == 'POST':
         form = BookReviewForm(request.POST)
         if form.is_valid():
@@ -321,7 +347,7 @@ def review_executed(request, book_id):
 @login_required
 def report_executed(request, loan_id):
     if not Loan.objects.filter(loan_id=loan_id).exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E002', 'Loan not found.', status=404)
     if request.method == 'POST':
         form = ReportDamageForm(request.POST)
         if form.is_valid():
@@ -344,61 +370,55 @@ def report_executed(request, loan_id):
 @login_required
 def loan_executed(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
     
+    if request.method != 'POST':
+        return redirect('confirm_loan', book_id=book_id)
+
     book = Book.objects.get(book_id=book_id)
     user = request.user
-    location = 'BLS Central Server'
-    if request.method == 'POST':
-        form = LoanForm(request.POST)
-        if form.is_valid():
-            print('is valid')
-            data = form.cleaned_data
-        else:
-            return render(request, 'confirm_loan.html', {'form': LoanForm, 'book': book, 'user': user, 'location': location, 'message': 'Invalid date'})
-
-    else:
-        form = LoanForm()
-
-    user = request.user
-    book = Book.objects.get(book_id=book_id)
-
     location = 'BLS Central Library'
-    startdate = datetime.combine(data['start_date'], datetime.now().time())
-    enddate = datetime.combine(data['end_date'], datetime.now().time())
+
+    form = LoanForm(request.POST)
+    if not form.is_valid():
+        return render(request, 'confirm_loan.html', {'form': form, 'book': book, 'user': user, 'location': location, 'message': 'Invalid date'})
+
+    data = form.cleaned_data
     loan = Loan.objects.create(
-        user_id=user, book_id=book, start_date=startdate, end_date=enddate)  # problem line
-    note = LoanIssuanceNotes.objects.filter(loan_id=loan.loan_id)
-    success = note[0].issued
-    reason = note[0].reason
+        user_id=user,
+        book_id=book,
+        start_date=data['start_date'],
+        end_date=data['end_date'],
+    )
+    note = LoanIssuanceNotes.objects.filter(loan_id=loan.loan_id).first()
+    success = note.issued if note else False
+    reason = note.reason if note else 'Loan request could not be processed.'
 
     return render(request, 'loan_executed.html', {'book': book, 'success': success, 'reason': reason})
 
 
+@login_required
 def create_bookmark(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
     user = request.user
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'create_bookmark.html', {'form': BookmarkForm, 'book': book, 'user': user})
 
 
+@login_required
 def bookmark_executed(request, book_id):
     if not Book.objects.filter(book_id=book_id).exists():
-        return render(request, '404.html')
-    if request.method == 'POST':
-        form = BookmarkForm(request.POST)
-        print('herelol')
-        if form.is_valid():
-            print('here')
-            data = form.cleaned_data
-        else:
-            print(form.errors)
-    else:
-        form = BookmarkForm()
+        return _error(request, 'BLS-E001', 'Book not found.', status=404)
+    if request.method != 'POST':
+        return redirect('create_bookmark', book_id=book_id)
 
-    print(data)
+    form = BookmarkForm(request.POST)
+    if not form.is_valid():
+        book = Book.objects.get(book_id=book_id)
+        return render(request, 'create_bookmark.html', {'form': form, 'book': book, 'user': request.user, 'message': 'Invalid bookmark details.'})
 
+    data = form.cleaned_data
     book = Book.objects.get(book_id=book_id)
     user = request.user
     page = data['page']
@@ -413,32 +433,32 @@ def bookmark_executed(request, book_id):
     return render(request, 'bookmarkexecuted.html', {'book': book, 'user': user, 'bookmark': bookmark, 'success': success})
 
 
+@login_required
 def extend(request, loan_id):
     if not Loan.objects.filter(loan_id=loan_id).exists():
-        return render(request, '404.html')
+        return _error(request, 'BLS-E002', 'Loan not found.', status=404)
     user = request.user
     loan = Loan.objects.get(loan_id=loan_id)
     book = Book.objects.get(book_id=loan.book_id.book_id)
     return render(request, 'extend.html', {'form': ExtendForm, 'loan': loan, 'book': book, 'user': user, })
 
 
+@login_required
 def extension_issued(request, loan_id):
     if not Loan.objects.filter(loan_id=loan_id).exists():
-        return render(request, '404.html')
-    if request.method == 'POST':
-        form = ExtendForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-        else:
-            return render(request, 'extend.html', {'form': ExtendForm, 'book': book, 'message': 'Invalid date'})
+        return _error(request, 'BLS-E002', 'Loan not found.', status=404)
 
-    else:
-        form = ExtendForm()
-
-    print(data)
-    days = data['days']
     loan = Loan.objects.get(loan_id=loan_id)
     book = Book.objects.get(book_id=loan.book_id.book_id)
+
+    if request.method != 'POST':
+        return redirect('extend', loan_id=loan_id)
+
+    form = ExtendForm(request.POST)
+    if not form.is_valid():
+        return render(request, 'extend.html', {'form': form, 'book': book, 'loan': loan, 'message': 'Invalid date'})
+
+    days = form.cleaned_data['days']
     eligible, flag, reason = loan.extension_eligibility(requested_days=days)
     reasons = ['already renewed', 'outofstock',
                'not at end of loan', 'allowed', 'morethan7']
@@ -447,7 +467,6 @@ def extension_issued(request, loan_id):
         loan.renewed = True
         loan.save()
         success = True
-        # self.physicalbook.readyforloan = False
     else:
         success = False
 

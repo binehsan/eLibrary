@@ -9,14 +9,18 @@ from core.validators import *
 
 
 class BookFilter(forms.Form):
-    categories = [('', 'All')] + [(id, name) for id, name in BOOK_CATEGORIES]
-    authors = [('', 'All')] + [(name, name) for name in Book.objects.values_list('author', flat=True).distinct()]
-    print(categories)
-    category = forms.ChoiceField(choices=categories, required=False)
-    author = forms.ChoiceField(choices=authors, required=False)
+    category = forms.ChoiceField(choices=[], required=False)
+    author = forms.ChoiceField(choices=[], required=False)
     ebook = forms.BooleanField(required=False, label='Avaliable as eBook')
     instock = forms.BooleanField(required=False, label='Only books inStock')
     ISBN = forms.CharField(max_length=13, required=False, label='ISBN:', validators=[check_isbn])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        categories = [('', 'All')] + [(id, name) for id, name in BOOK_CATEGORIES]
+        authors = [('', 'All')] + [(name, name) for name in Book.objects.values_list('author', flat=True).distinct()]
+        self.fields['category'].choices = categories
+        self.fields['author'].choices = authors
 
 class LoanForm(forms.Form):
     start_date = forms.DateField(required=True, label='Choose start date: ', widget=forms.DateInput(attrs={'type': 'date'}), validators=[check_future])

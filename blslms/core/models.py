@@ -17,6 +17,7 @@ import requests
 import re
 import phonenumbers
 import pymupdf
+from django.core.exceptions import ImproperlyConfigured
 from core.utils import *
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import Group
@@ -37,7 +38,7 @@ def check_unique(value, book_id):
     return value
 
 
-API_NINJA_KEY = 'zOTQtRmlaWZSpu7YJ9Hosg==Ow3XXv14FgauUgfE'
+API_NINJA_KEY = os.getenv('API_NINJA_KEY')
 
 
 class AbstractModel(models.Model):
@@ -319,7 +320,7 @@ class Book(AbstractModel):
 
 class BLSUser(AbstractUser):
     def is_student(self):
-        return True if self.groups.filter('Students').exists() else False
+        return self.groups.filter(name='Students').exists()
 
     def is_admin(self):
         return True if self.groups.filter(name='Admins').exists() else False
@@ -566,6 +567,11 @@ class Loan(AbstractModel):
     def collect(self, *args, **kwargs):
         avaliables = PhysicalBook.objects.filter(
             book_id=self.book_id, ready_for_loan=True)
+        if not avaliables.exists():
+            self.status = 'Awaiting stock'
+            super(Loan, self).save(*args, **kwargs)
+            return
+
         self.physicalbook = avaliables[0]
         super(Loan, self).save(*args, **kwargs)
         self.custody = True
@@ -630,6 +636,14 @@ class Review(AbstractModel):
         return f'Review {self.review_id} ({self.user_id}) - {self.book}'
 
     def checks(self):
+        if not API_NINJA_KEY:
+            revnote = ReviewNote.objects.create(
+                user_id=self.user_id,
+                comments='Profanity service unavailable.',
+                blocked=True,
+            )
+            return False, revnote
+
         url = f'https://api.api-ninjas.com/v1/profanityfilter?text={self.comments}'
         headers = {
             'x-api-key': API_NINJA_KEY
@@ -721,18 +735,22 @@ class Penalty(AbstractModel):
 
     def save(self, *args, **kwargs):
         print('in save func')
-        if self.paid:
+        if self.paid and self.damage_id:
             print('in self paid')
             print(self.damage_id.resolved)
             self.damage_id.resolved = True
             self.damage_id.save()
-        else:
+        elif not self.paid and self.damage_id:
             self.damage_id.penalty_issued = True
             self.damage_id.save()
 
         if self._state.adding:
-            self.physicalbook = self.damage_id.physicalbook
-            self.user_id = self.damage_id.user_id
+            if self.damage_id:
+                self.physicalbook = self.damage_id.physicalbook
+                self.user_id = self.damage_id.user_id
+            elif self.loan_id:
+                self.physicalbook = self.loan_id.physicalbook
+                self.user_id = self.loan_id.user_id
 
         super(Penalty, self).save(*args, **kwargs)
 

@@ -1,3 +1,3 @@
-from .celery import celeryapp as lms_celery
+from .celery import app as celery_app, celeryapp
 
-__all__ = ["lms_celery"] 
+__all__ = ["celery_app", "celeryapp"] 
