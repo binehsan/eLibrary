@@ -4,8 +4,8 @@ BOOK_CONDITIONS = [
     (3, 'Damaged - Ready for Loan'),
 ]
 
-ADMIN_EMAIL = 'amen@timurid.org'
-LIBRARY_EMAIL = 'noreply@businesslaw.school'
+ADMIN_EMAIL = 'REDACTED'
+LIBRARY_EMAIL = 'REDACTED'
 
 BOOK_CATEGORIES = [
     (1, 'Administrative Law'),
